@@ -10,7 +10,13 @@ import {
 } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import LoginScreen from './src/screens/LoginScreen';
+import StudentScreen from './src/screens/StudentScreen';  // or whatever you named it
+import TimetableScreen from './src/screens/TimetableScreen';
 import TeacherScreen from './src/screens/TeacherScreen';
+import ClassTeacherScreen from './src/screens/ClassTeacherScreen';
+import ImportTeachersScreen from './src/screens/ImportTeachersScreen';
+// import ImportStudentsScreen from './src/screens/ImportStudentsScreen';
+// import ImportStudentsScreen from './src/screens/ImportStudentsScreen';
 import { supabase } from './src/services/supabase';
 
 const colors = {
@@ -125,6 +131,15 @@ function Dashboard({ onLogout, onNavigate }) {
             </View>
           </TouchableOpacity>
 
+<TouchableOpacity 
+  style={[styles.actionCard, { backgroundColor: colors.orange }]}
+  onPress={() => onNavigate('classTeacher')}
+>
+  <Text style={styles.actionEmoji}>🍎</Text>
+  <Text style={styles.actionText}>Class Teachers</Text>
+  <Text style={styles.actionSubtext}>Assign class teachers</Text>
+</TouchableOpacity>
+
           <TouchableOpacity 
             style={[styles.statCard, styles.statCardRight]}
             onPress={() => onNavigate('teachers')}
@@ -176,15 +191,33 @@ function Dashboard({ onLogout, onNavigate }) {
             <Text style={styles.actionLabel}>Teachers</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.actionItem}
-            onPress={() => Alert.alert('Coming Soon', 'Students section coming soon!')}
-          >
-            <View style={[styles.actionIcon, { backgroundColor: colors.orange }]}>
-              <Text style={styles.actionIconText}>📚</Text>
-            </View>
-            <Text style={styles.actionLabel}>Students</Text>
-          </TouchableOpacity>
+         <TouchableOpacity 
+  style={styles.actionItem}
+  onPress={() => onNavigate('students')}
+>
+  <View style={[styles.actionIcon, { backgroundColor: colors.orange }]}>
+    <Text style={styles.actionIconText}>📚</Text>
+  </View>
+  <Text style={styles.actionLabel}>Students</Text>
+</TouchableOpacity>
+
+	  <TouchableOpacity 
+  	    style={[styles.actionCard, { backgroundColor: colors.purple }]}
+	    onPress={() => onNavigate('import')}
+	  >
+	    <Text style={styles.actionEmoji}>📂</Text>
+  	    <Text style={styles.actionText}>Import SARAL</Text>
+	    <Text style={styles.actionSubtext}>Upload CSV</Text>
+	  </TouchableOpacity>
+
+<TouchableOpacity 
+  style={[styles.actionCard, { backgroundColor: colors.purple }]}
+  onPress={() => onNavigate('timetable')}
+>
+  <Text style={styles.actionEmoji}>📅</Text>
+  <Text style={styles.actionText}>Timetable</Text>
+  <Text style={styles.actionSubtext}>View class schedule</Text>
+</TouchableOpacity>
 
           <TouchableOpacity 
             style={styles.actionItem}
@@ -195,6 +228,14 @@ function Dashboard({ onLogout, onNavigate }) {
             </View>
             <Text style={styles.actionLabel}>Attendance</Text>
           </TouchableOpacity>
+          <TouchableOpacity 
+  style={[styles.actionCard, { backgroundColor: colors.purple }]}
+  onPress={() => onNavigate('importTeachers')}
+>
+  <Text style={styles.actionEmoji}>📂</Text>
+  <Text style={styles.actionText}>Import Teachers</Text>
+  <Text style={styles.actionSubtext}>Upload CSV files</Text>
+</TouchableOpacity>
 
           <TouchableOpacity 
             style={styles.actionItem}
@@ -302,12 +343,20 @@ export default function App() {
 
   // Show different screens based on navigation
   switch(currentScreen) {
-    case 'teachers':
+    case 'importTeachers':
+  return <ImportTeachersScreen onBack={() => setCurrentScreen('dashboard')} />;
+case 'classTeacher':
+  return <ClassTeacherScreen onBack={() => setCurrentScreen('dashboard')} />;
+case 'timetable':
+  return <TimetableScreen onBack={() => setCurrentScreen('dashboard')} />;
+case 'students':
+  return <StudentScreen onBack={() => setCurrentScreen('dashboard')} />;    
+case 'teachers':
       return <TeacherScreen onBack={() => setCurrentScreen('dashboard')} />;
     default:
       return <Dashboard 
         onLogout={() => setIsAuthenticated(false)} 
-        onNavigate={handleNavigate}
+        onNavigate={setCurrentScreen}
       />;
   }
 }

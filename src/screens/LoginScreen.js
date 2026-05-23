@@ -121,6 +121,15 @@ export default function LoginScreen({ onLogin }) {
           </Text>
         </TouchableOpacity>
 
+<TouchableOpacity 
+  style={[styles.actionCard, { backgroundColor: colors.purple }]}
+  onPress={() => onNavigate('timetable')}
+>
+  <Text style={styles.actionEmoji}>📅</Text>
+  <Text style={styles.actionText}>Timetable</Text>
+  <Text style={styles.actionSubtext}>View class schedule</Text>
+</TouchableOpacity>
+
         {/* Toggle between Login and Register */}
         <TouchableOpacity
           onPress={() => setIsLogin(!isLogin)}

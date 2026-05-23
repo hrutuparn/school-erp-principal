@@ -1,0 +1,241 @@
+teacher_email,class_name,subject
+kavita.reddy@school.com,1A,History
+manoj.trivedi@school.com,1A,Physics
+kiran.rao@school.com,1A,Chemistry
+vinay.iyer@school.com,1A,English
+sakshi.mishra@school.com,1A,Geography
+pooja.mishra@school.com,1A,Mathematics
+shweta.pandey@school.com,1A,Science
+anjali.gupta@school.com,1A,Computer Science
+lata.gupta@school.com,1B,Mathematics
+sneha.malhotra@school.com,1B,English
+amit.saxena@school.com,1B,Geography
+priyanka.singh@school.com,1B,History
+vijay.kapoor@school.com,1B,Physics
+aarti.bose@school.com,1B,Computer Science
+sunita.nair@school.com,1B,Science
+sunita.nair@school.com,1B,Chemistry
+pooja.mishra@school.com,1C,Mathematics
+pooja.mishra@school.com,1C,Computer Science
+preeti.reddy@school.com,1C,Physics
+sanjay.patel@school.com,1C,Science
+amit.saxena@school.com,1C,Chemistry
+kavita.reddy@school.com,1C,History
+sneha.malhotra@school.com,1C,English
+anjali.gupta@school.com,1C,Geography
+vinay.iyer@school.com,2A,Computer Science
+meera.singh@school.com,2A,Geography
+sneha.malhotra@school.com,2A,Science
+amit.saxena@school.com,2A,Mathematics
+deepak.verma@school.com,2A,History
+kavita.reddy@school.com,2A,Physics
+vikram.joshi@school.com,2A,Chemistry
+sakshi.mishra@school.com,2A,English
+sneha.malhotra@school.com,2B,Physics
+sunita.nair@school.com,2B,Geography
+ramesh.verma@school.com,2B,English
+alok.patel@school.com,2B,Science
+deepak.verma@school.com,2B,Mathematics
+rahul.iyer@school.com,2B,History
+ramesh.verma@school.com,2B,Chemistry
+nitin.joshi@school.com,2B,Computer Science
+sakshi.mishra@school.com,2C,Chemistry
+arjun.sharma@school.com,2C,English
+rashmi.chopra@school.com,2C,Computer Science
+rashmi.chopra@school.com,2C,Geography
+rohan.deshmukh@school.com,2C,Mathematics
+rohan.deshmukh@school.com,2C,Physics
+preeti.reddy@school.com,2C,History
+sanjay.patel@school.com,2C,Science
+sneha.malhotra@school.com,3A,Geography
+vinay.iyer@school.com,3A,Science
+manoj.trivedi@school.com,3A,English
+kavita.reddy@school.com,3A,Chemistry
+suresh.sharma@school.com,3A,History
+vijay.kapoor@school.com,3A,Mathematics
+manoj.trivedi@school.com,3A,Computer Science
+rahul.iyer@school.com,3A,Physics
+ramesh.verma@school.com,3B,Geography
+shweta.pandey@school.com,3B,Chemistry
+rohan.deshmukh@school.com,3B,History
+rohan.deshmukh@school.com,3B,Physics
+meera.singh@school.com,3B,Computer Science
+sanjay.patel@school.com,3B,Mathematics
+anita.malhotra@school.com,3B,English
+geeta.kumar@school.com,3B,Science
+vikram.joshi@school.com,3C,Mathematics
+anjali.gupta@school.com,3C,Geography
+geeta.kumar@school.com,3C,English
+vijay.kapoor@school.com,3C,Computer Science
+alok.patel@school.com,3C,Physics
+nitin.joshi@school.com,3C,Chemistry
+rohan.deshmukh@school.com,3C,Science
+priyanka.singh@school.com,3C,History
+aarti.bose@school.com,4A,Computer Science
+vijay.kapoor@school.com,4A,Physics
+amit.saxena@school.com,4A,Chemistry
+anjali.gupta@school.com,4A,Science
+rohan.deshmukh@school.com,4A,Geography
+deepak.verma@school.com,4A,History
+sneha.malhotra@school.com,4A,English
+ramesh.verma@school.com,4A,Mathematics
+anjali.gupta@school.com,4B,Science
+sneha.malhotra@school.com,4B,Chemistry
+kiran.rao@school.com,4B,History
+kiran.rao@school.com,4B,English
+manoj.trivedi@school.com,4B,Computer Science
+anita.malhotra@school.com,4B,Physics
+geeta.kumar@school.com,4B,Mathematics
+deepak.verma@school.com,4B,Geography
+pooja.mishra@school.com,4C,History
+kiran.rao@school.com,4C,Physics
+manoj.trivedi@school.com,4C,Mathematics
+nitin.joshi@school.com,4C,Chemistry
+preeti.reddy@school.com,4C,Computer Science
+kavita.reddy@school.com,4C,Science
+anjali.gupta@school.com,4C,Geography
+meera.singh@school.com,4C,English
+kavita.reddy@school.com,5A,Chemistry
+vijay.kapoor@school.com,5A,History
+preeti.reddy@school.com,5A,Physics
+anita.malhotra@school.com,5A,English
+geeta.kumar@school.com,5A,Geography
+sneha.malhotra@school.com,5A,Computer Science
+aarti.bose@school.com,5A,Science
+sneha.malhotra@school.com,5A,Mathematics
+vinay.iyer@school.com,5B,Mathematics
+vikram.joshi@school.com,5B,History
+arjun.sharma@school.com,5B,Geography
+rashmi.chopra@school.com,5B,Physics
+pooja.mishra@school.com,5B,English
+vikram.joshi@school.com,5B,Science
+anjali.gupta@school.com,5B,Chemistry
+sunita.nair@school.com,5B,Computer Science
+shweta.pandey@school.com,5C,Physics
+vikram.joshi@school.com,5C,Geography
+deepak.verma@school.com,5C,English
+priyanka.singh@school.com,5C,Mathematics
+meera.singh@school.com,5C,Chemistry
+vijay.kapoor@school.com,5C,Computer Science
+aarti.bose@school.com,5C,History
+nitin.joshi@school.com,5C,Science
+suresh.sharma@school.com,6A,Computer Science
+manoj.trivedi@school.com,6A,Chemistry
+lata.gupta@school.com,6A,English
+vikram.joshi@school.com,6A,Science
+sunita.nair@school.com,6A,Geography
+alok.patel@school.com,6A,Physics
+manoj.trivedi@school.com,6A,Mathematics
+deepak.verma@school.com,6A,History
+sakshi.mishra@school.com,6B,Physics
+alok.patel@school.com,6B,English
+shweta.pandey@school.com,6B,Chemistry
+shweta.pandey@school.com,6B,Geography
+vinay.iyer@school.com,6B,Science
+arjun.sharma@school.com,6B,Computer Science
+preeti.reddy@school.com,6B,Mathematics
+shweta.pandey@school.com,6B,History
+amit.saxena@school.com,6C,Science
+preeti.reddy@school.com,6C,Mathematics
+geeta.kumar@school.com,6C,Geography
+shweta.pandey@school.com,6C,Chemistry
+shweta.pandey@school.com,6C,Physics
+alok.patel@school.com,6C,Computer Science
+deepak.verma@school.com,6C,History
+rahul.iyer@school.com,6C,English
+sakshi.mishra@school.com,7A,History
+amit.saxena@school.com,7A,Physics
+manoj.trivedi@school.com,7A,Chemistry
+suresh.sharma@school.com,7A,English
+sakshi.mishra@school.com,7A,Geography
+sanjay.patel@school.com,7A,Mathematics
+ramesh.verma@school.com,7A,Science
+ramesh.verma@school.com,7A,Computer Science
+suresh.sharma@school.com,7B,Physics
+priyanka.singh@school.com,7B,Geography
+rohan.deshmukh@school.com,7B,History
+priyanka.singh@school.com,7B,Mathematics
+lata.gupta@school.com,7B,Science
+ramesh.verma@school.com,7B,Chemistry
+vijay.kapoor@school.com,7B,English
+lata.gupta@school.com,7B,Computer Science
+rahul.iyer@school.com,7C,History
+shweta.pandey@school.com,7C,Science
+anjali.gupta@school.com,7C,Physics
+rashmi.chopra@school.com,7C,English
+aarti.bose@school.com,7C,Chemistry
+anjali.gupta@school.com,7C,Geography
+kavita.reddy@school.com,7C,Computer Science
+rahul.iyer@school.com,7C,Mathematics
+meera.singh@school.com,8A,Geography
+rahul.iyer@school.com,8A,Computer Science
+kiran.rao@school.com,8A,History
+sunita.nair@school.com,8A,Physics
+rahul.iyer@school.com,8A,Mathematics
+rahul.iyer@school.com,8A,English
+arjun.sharma@school.com,8A,Chemistry
+alok.patel@school.com,8A,Science
+arjun.sharma@school.com,8B,Science
+amit.saxena@school.com,8B,Mathematics
+meera.singh@school.com,8B,History
+pooja.mishra@school.com,8B,English
+rohan.deshmukh@school.com,8B,Chemistry
+shweta.pandey@school.com,8B,Computer Science
+manoj.trivedi@school.com,8B,Geography
+sunita.nair@school.com,8B,Physics
+alok.patel@school.com,8C,Computer Science
+rohan.deshmukh@school.com,8C,Science
+lata.gupta@school.com,8C,History
+arjun.sharma@school.com,8C,Mathematics
+deepak.verma@school.com,8C,Geography
+kavita.reddy@school.com,8C,Chemistry
+priyanka.singh@school.com,8C,Physics
+vijay.kapoor@school.com,8C,English
+anjali.gupta@school.com,9A,Physics
+kavita.reddy@school.com,9A,Mathematics
+rashmi.chopra@school.com,9A,Science
+priyanka.singh@school.com,9A,Geography
+deepak.verma@school.com,9A,History
+meera.singh@school.com,9A,English
+ramesh.verma@school.com,9A,Computer Science
+sneha.malhotra@school.com,9A,Chemistry
+manoj.trivedi@school.com,9B,English
+suresh.sharma@school.com,9B,Geography
+manoj.trivedi@school.com,9B,History
+manoj.trivedi@school.com,9B,Mathematics
+arjun.sharma@school.com,9B,Chemistry
+suresh.sharma@school.com,9B,Science
+priyanka.singh@school.com,9B,Computer Science
+arjun.sharma@school.com,9B,Physics
+priyanka.singh@school.com,9C,Mathematics
+rohan.deshmukh@school.com,9C,Computer Science
+sanjay.patel@school.com,9C,Geography
+sanjay.patel@school.com,9C,Physics
+sunita.nair@school.com,9C,Science
+vikram.joshi@school.com,9C,History
+sanjay.patel@school.com,9C,English
+nitin.joshi@school.com,9C,Chemistry
+sanjay.patel@school.com,10A,Computer Science
+kiran.rao@school.com,10A,Science
+sakshi.mishra@school.com,10A,Mathematics
+shweta.pandey@school.com,10A,English
+sakshi.mishra@school.com,10A,History
+geeta.kumar@school.com,10A,Physics
+kiran.rao@school.com,10A,Geography
+nitin.joshi@school.com,10A,Chemistry
+rohan.deshmukh@school.com,10B,Geography
+ramesh.verma@school.com,10B,English
+sanjay.patel@school.com,10B,Mathematics
+meera.singh@school.com,10B,History
+shweta.pandey@school.com,10B,Chemistry
+anjali.gupta@school.com,10B,Physics
+geeta.kumar@school.com,10B,Computer Science
+pooja.mishra@school.com,10B,Science
+meera.singh@school.com,10C,Physics
+nitin.joshi@school.com,10C,Geography
+sanjay.patel@school.com,10C,English
+suresh.sharma@school.com,10C,Mathematics
+rahul.iyer@school.com,10C,Chemistry
+kavita.reddy@school.com,10C,Computer Science
+shweta.pandey@school.com,10C,Science
+rohan.deshmukh@school.com,10C,History
