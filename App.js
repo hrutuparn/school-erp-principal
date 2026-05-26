@@ -228,7 +228,7 @@ function Dashboard({ onLogout, onNavigate, lang, onShowLanguageModal }) {
             onPress={() => onNavigate('classTeacher')}
           >
             <View style={[styles.actionIcon, { backgroundColor: colors.orange }]}>
-              <Text style={styles.actionIconText}>🍎</Text>
+              <Text style={styles.actionIconText}>👩‍🏫</Text>
             </View>
             <Text style={styles.actionLabel} numberOfLines={1}>{t('class_teachers', lang)}</Text>
           </TouchableOpacity>
@@ -680,25 +680,27 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   actionItem: {
-    width: '25%',
+    width: '31.3%',
+    marginHorizontal: '1%',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   actionIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 68,
+    height: 68,
+    borderRadius: 34,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 8,
   },
   actionIconText: {
-    fontSize: 24,
+    fontSize: 34,
   },
   actionLabel: {
-    fontSize: 11,
+    fontSize: 13,
     color: colors.text,
     textAlign: 'center',
+    fontWeight: 'bold',
     paddingHorizontal: 2
   },
   activitiesCard: {
