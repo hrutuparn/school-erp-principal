@@ -176,9 +176,6 @@ export default function StaffScreen({ onBack, lang }) {
             try {
               // Delete staff attendance logs first
               await supabase.from('staff_attendance').delete().eq('person_id', editingStaff.staff_id);
-              
-              // Clear staff driver links in buses
-              await supabase.from('buses').update({ driver_id: null }).eq('driver_id', editingStaff.staff_id);
 
               const { error } = await supabase
                 .from('staff')

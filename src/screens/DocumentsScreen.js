@@ -35,8 +35,7 @@ export default function DocumentsScreen({ onBack }) {
         .from('document_requests')
         .select(`
           *,
-          students ( id, first_name, last_name, birth_date, class, roll_number, gr_number ),
-          parents ( name, phone )
+          students ( id, first_name, last_name, birth_date, class, roll_number, gr_number, parent_name, parent_phone )
         `)
         .order('requested_on', { ascending: false });
 
@@ -202,7 +201,7 @@ export default function DocumentsScreen({ onBack }) {
           contentContainerStyle={styles.list}
           renderItem={({ item }) => {
             const student = item.students;
-            const parent = item.parents;
+            const parent = student ? { name: student.parent_name, phone: student.parent_phone } : null;
             const isPending = item.status === 'pending';
 
             return (
