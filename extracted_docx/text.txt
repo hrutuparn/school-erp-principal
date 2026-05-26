@@ -1,0 +1,556 @@
+i
+ know that if change the entire database structure now, then we will have to update all the codes we have created so far. but 
+i
+ think fixing it will be 
+more tougher
+ in future, so can we just delete all the existing tables and data and make all new data from 
+scracth
+ as given below, but also keep 1 thing in your mind that 
+i
+ am from 
+non tech
+ background so 
+i
+ might go wrong. 
+So
+ 
+its
+ your job to take final decision 
+wheter
+ to go with existing data structure or have new one. I would 
+appriciate
+ it if you argue with me (only if necessary). the new structure is as follows
+📋
+ Table 1 — Schools
+sql
+schools
+─────────────────────────────────────────
+school_id
+          → SCH_MH_
+27430012  (
+Primary Key)
+name               → "Delhi Public School"
+udise_number
+       → "27430012"
+address            → "123 Main Road, Pune"
+city               → "Pune"
+state              → "Maharashtra"
+board              → "CBSE" / "SSC" / "ICSE"
+medium             → "English" / "Hindi" / "Marathi"
+phone              → "020-XXXXXXXX"
+email              → "dps@school.com"
+logo_url
+           → link to logo
+bus_facility
+       → true / false
+midday_meal
+        → true / false
+plan               → "free" / "premium"
+created_at
+         → 01-Jan-2025
+📋
+ Table 2 — Principals
+sql
+principals
+─────────────────────────────────────────
+principal_id
+       → PRI_
+001  (
+Primary Key)
+school_id
+          → SCH_MH_
+27430012  ←
+ (Foreign Key → schools)
+full_name
+          → "Mr. Rajesh Kumar"
+mobile             → "98XXXXXXXX"
+email              → "rajesh@gmail.com"
+date_of_birth
+      → 1970-03-14        ← birthday cake 
+feature
+!
+password_hash
+      → (encrypted password)
+profile_photo
+      → link to photo
+created_at
+         → 01-Jan-2025
+📋
+ Table 3 — Teachers
+sql
+teachers
+─────────────────────────────────────────
+teacher_id
+         → TCH_
+00421  (
+Primary Key)
+school_id
+          → SCH_MH_
+27430012  ←
+ (Foreign Key → schools)
+full_name
+          → "Mrs. Sunita Patil"
+mobile             → "97XXXXXXXX"
+email              → "sunita@gmail.com"
+date_of_birth
+      → 1985-08-22
+employee_id
+        → "EMP021"
+qualification      → "
+B.Ed
+, 
+M.Sc
+ Maths"
+base_salary
+        → 35000
+bank_account
+       → "XXXXXXXXXXXX"
+password_hash
+      → (encrypted password)
+joining_date
+       → 2019-07-01
+is_active
+          → true / false
+created_at
+         → 01-Jan-2025
+📋
+ Table 4 — Teacher Subjects (Links teachers to subjects &amp; classes)
+sql
+teacher_subjects
+─────────────────────────────────────────
+id                 → (Primary Key)
+teacher_id
+         → TCH_00421   ← (Foreign Key → teachers)
+class_id
+           → CLS_9A      ← (Foreign Key → classes)
+subject            → "Mathematics"
+is_class_teacher
+   → true / false
+One teacher can teach multiple subjects in multiple classes. This table handles that.
+📋
+ Table 5 — Staff (Drivers, Watchmen etc.)
+sql
+staff
+─────────────────────────────────────────
+staff_id
+           → STF_
+00031  (
+Primary Key)
+school_id
+          → SCH_MH_
+27430012  ←
+ (Foreign Key)
+full_name
+          → "Ramesh Yadav"
+mobile             → "91XXXXXXXX"
+role               → "
+bus_driver
+"/"watchman"/"helper"/"peon"
+date_of_birth
+      → 1982-11-05
+joining_date
+       → 2020-01-10
+base_salary
+        → 18000
+bank_account
+       → "XXXXXXXXXXXX"
+is_active
+          → true / false
+📋
+ Table 6 — Classes
+sql
+classes
+─────────────────────────────────────────
+class_id
+           → CLS_SCH27430012_9
+A  (
+Primary Key)
+school_id
+          → SCH_MH_
+27430012  ←
+ (Foreign Key)
+standard           → 9
+section            → "A"
+display_name
+       → "9-A"
+class_teacher_id
+   → TCH_00421   ← (Foreign Key → teachers)
+academic_year
+      → "2024-25"
+📋
+ Table 7 — Students 
+⭐
+sql
+students
+─────────────────────────────────────────
+student_id
+         → STU_
+00892  (
+Primary Key)
+unique_app_id
+      → "RAHUL48299A"   ← your custom ID
+udise_id
+           → "MH2024XXXXX"
+school_id
+          → SCH_MH_
+27430012  ←
+ (Foreign Key)
+class_id
+           → CLS_SCH27430012_9
+A  ←
+ (Foreign Key)
+full_name
+          → "Rahul Sharma"
+date_of_birth
+      → 2010-08-14       ← birthday gift feature!
+gender             → "male"
+roll_number
+        → 15
+blood_group
+        → "B+"
+allergies          → "
+peanuts,milk
+"   ← midday meal alerts
+address            → "45 Shivaji Nagar, Pune"
+bus_stop
+           → "Shivaji Nagar Stop"
+bus_id
+             → BUS_001   ← (Foreign Key → buses)
+admission_date
+     → 2024-06-01
+academic_year
+      → "2024-25"
+is_active
+          → true / false
+📋
+ Table 8 — Parents
+sql
+parents
+─────────────────────────────────────────
+parent_id
+          → PAR_
+00451  (
+Primary Key)
+full_name
+          → "Mr. Suresh Sharma"
+relation           → "father"/"mother"/"guardian"
+mobile             → "99XXXXXXXX"
+email              → "suresh@gmail.com"
+address            → "45 Shivaji Nagar, Pune"
+password_hash
+      → (encrypted)
+created_at
+         → 01-Jan-2025
+📋
+ Table 9 — Parent-Student Link
+sql
+parent_student
+─────────────────────────────────────────
+id                 → (Primary Key)
+parent_id
+          → PAR_00451   ← (Foreign Key → parents)
+student_id
+         → STU_00892   ← (Foreign Key → students)
+This table exists because one parent can have 2 children in the same school. This handles that cleanly.
+📋
+ Table 10 — Student Attendance
+sql
+student_attendance
+─────────────────────────────────────────
+id                 → (Primary Key)
+student_id
+         → STU_00892   ← (Foreign Key)
+class_id
+           → CLS_SCH27430012_9A
+date               → 2025-01-15
+status             → "present"/"absent"/"late"
+marked_by
+          → TCH_00421   ← teacher who marked it
+marked_at
+          → 07:45:00
+📋
+ Table 11 — Teacher &amp; Staff Attendance
+sql
+staff_attendance
+─────────────────────────────────────────
+id                 → (Primary Key)
+person_id
+          → TCH_00421 or STF_00031
+person_type
+        → "teacher" / "staff"
+school_id
+          → SCH_MH_27430012
+date               → 2025-01-15
+status             → "present"/"absent"/"
+half_day
+"/"leave"
+marked_by
+          → PRI_
+001  ←
+ principal
+📋
+ Table 12 — Marks
+sql
+marks
+─────────────────────────────────────────
+marks_id
+           → MRK_
+00231  (
+Primary Key)
+student_id
+         → STU_00892   ← (Foreign Key)
+school_id
+          → SCH_MH_27430012
+class_id
+           → CLS_SCH27430012_9A
+subject            → "Mathematics"
+test_name
+          → "Unit Test 1"
+test_type
+          → "unit"/"weekly"/"monthly"/"
+olympiad
+"/"semester"
+date               → 2025-01-20
+max_marks
+          → 25
+marks_obtained
+     → 21
+grade              → "A"
+teacher_id
+         → TCH_00421
+📋
+ Table 13 — Homework
+sql
+homework
+─────────────────────────────────────────
+hw_id
+              → HW_
+00231  (
+Primary Key)
+school_id
+          → SCH_MH_27430012
+class_id
+           → CLS_SCH27430012_9A
+teacher_id
+         → TCH_00421
+subject            → "Mathematics"
+assigned_date
+      → 2025-01-15
+due_date
+           → 2025-01-17
+content_type
+       → "text"/"photo"/"voice"/"preloaded"
+text_content
+       → "Solve Ex 7.1 Q1 to Q10"
+photo_url
+          → link (if photo)
+voice_url
+          → link (if voice note)
+chapter_no
+         → 7
+chapter_name
+       → "Triangles"
+📋
+ Table 14 — Fees
+sql
+fees
+─────────────────────────────────────────
+fee_id
+             → FEE_
+00341  (
+Primary Key)
+school_id
+          → SCH_MH_27430012
+student_id
+         → STU_00892
+parent_id
+          → PAR_00451
+fee_type
+           → "tuition"/"bus"/"picnic"/"exam"
+description        → "Annual Fees Q2"
+amount             → 12000
+due_date
+           → 2025-01-31
+status             → "paid"/"unpaid"/"partial"
+paid_amount
+        → 12000
+paid_on
+            → 2025-01-20
+payment_method
+     → "
+upi
+"/"card"/"
+netbanking
+"
+transaction_id
+     → "TXN_XXXXX"
+receipt_url
+        → link to PDF receipt
+📋
+ Table 15 — Buses
+sql
+buses
+─────────────────────────────────────────
+bus_id
+             → BUS_
+001  (
+Primary Key)
+school_id
+          → SCH_MH_27430012
+bus_number
+         → "MH-12-AB-1234"
+driver_id
+          → STF_00031   ← (Foreign Key → staff)
+capacity           → 40
+route_name
+         → "Shivaji Nagar Route"
+current_lat
+        → 18.5204     ← updated every 10 seconds
+current_lng
+        → 73.8567
+last_updated
+       → 2025-01-15 07:15:32
+📋
+ Table 16 — Bus Stops
+sql
+bus_stops
+─────────────────────────────────────────
+stop_id
+            → (Primary Key)
+bus_id
+             → BUS_001   ← (Foreign Key)
+stop_name
+          → "Shivaji Nagar"
+stop_order
+         → 1
+expected_time
+      → "07:00"
+latitude           → 18.5301
+longitude          → 73.8412
+📋
+ Table 17 — Chat Rooms
+sql
+chat_rooms
+─────────────────────────────────────────
+room_id
+            → CHAT_
+001  (
+Primary Key)
+school_id
+          → SCH_MH_27430012
+teacher_id
+         → TCH_00421
+parent_id
+          → PAR_00451
+student_id
+         → STU_00892   ← which child it's about
+last_message
+       → "Rahul did well today"
+last_message_
+time
+  →
+ 2025-01-15 15:45:00
+📋
+ Table 18 — Chat Messages
+sql
+chat_messages
+─────────────────────────────────────────
+message_id
+         → (Primary Key)
+room_id
+            → CHAT_001   ← (Foreign Key)
+sender_id
+          → TCH_00421 or PAR_00451
+sender_role
+        → "teacher"/"parent"/"principal"
+message            → "Rahul needs more practice"
+command            → "/chat"/"/complaint"/"/doubt
+"  ←
+ your slash commands
+timestamp          → 2025-01-15 15:45:00
+is_read
+            → true / false
+📋
+ Table 19 — Events / Calendar
+sql
+events
+─────────────────────────────────────────
+event_id
+           → EVT_
+001  (
+Primary Key)
+school_id
+          → SCH_MH_27430012
+title              → "Parent Teacher Meeting"
+type               → "
+ptm
+"/"holiday"/"exam"/"trip"/"function"
+date               → 2025-01-25
+start_time
+         → "10:00"
+end_time
+           → "13:00"
+description        → "Semester 1 PTM"
+applicable_to
+      → "all" / "9-A,9-B"
+is_holiday
+         → true / false
+📋
+ Table 20 — Mid-Day Meal
+sql
+midday_meal
+─────────────────────────────────────────
+meal_id
+            → (Primary Key)
+school_id
+          → SCH_MH_27430012
+date               → 2025-01-15
+menu_items
+         → "Rice, Dal, Sabzi, Roti"
+allergens          → "milk, groundnut"   ← auto alerts allergic students' parents
+📋
+ Table 21 — Document Requests
+sql
+document_requests
+─────────────────────────────────────────
+request_id
+         → (Primary Key)
+school_id
+          → SCH_MH_27430012
+student_id
+         → STU_00892
+parent_id
+          → PAR_00451
+type               → "
+leaving_cert
+"/"
+name_change
+"/"
+dob_change
+"
+note               → "Spelling correction in name"
+status             → "pending"/"approved"/"rejected"
+requested_on
+       → 2025-01-10
+resolved_on
+        → 2025-01-15 (filled when done)
+📋
+ Table 22 — Timetable
+sql
+timetable
+─────────────────────────────────────────
+id                 → (Primary Key)
+class_id
+           → CLS_SCH27430012_9A
+day                → "Monday"
+period_number
+      → 1
+subject            → "Mathematics"
+teacher_id
+         → TCH_00421
+start_time
+         → "07:30"
+end_time
+           → "08:15"
+academic_year
+      → "2024-25"

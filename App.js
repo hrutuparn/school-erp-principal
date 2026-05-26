@@ -6,18 +6,28 @@ import {
   ScrollView, 
   TouchableOpacity, 
   SafeAreaView,
-  Alert
+  Alert,
+  Modal
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import LoginScreen from './src/screens/LoginScreen';
-import StudentScreen from './src/screens/StudentScreen';  // or whatever you named it
+import StudentScreen from './src/screens/StudentScreen';
 import TimetableScreen from './src/screens/TimetableScreen';
 import TeacherScreen from './src/screens/TeacherScreen';
 import ClassTeacherScreen from './src/screens/ClassTeacherScreen';
 import ImportTeachersScreen from './src/screens/ImportTeachersScreen';
-// import ImportStudentsScreen from './src/screens/ImportStudentsScreen';
-// import ImportStudentsScreen from './src/screens/ImportStudentsScreen';
+import AttendanceStaffScreen from './src/screens/AttendanceStaffScreen';
+import SalaryCalculatorScreen from './src/screens/SalaryCalculatorScreen';
+import DocumentsScreen from './src/screens/DocumentsScreen';
+import SaralScreen from './src/screens/SaralScreen';
+import SubjectsScreen from './src/screens/SubjectsScreen';
+import StaffScreen from './src/screens/StaffScreen';
+import MealManagementScreen from './src/screens/MealManagementScreen';
+import TeacherChatScreen from './src/screens/TeacherChatScreen';
+import LeaveApprovalsScreen from './src/screens/LeaveApprovalsScreen';
 import { supabase } from './src/services/supabase';
+import { t } from './src/services/i18n';
 
 const colors = {
   background: '#F5F0E8',
@@ -27,11 +37,12 @@ const colors = {
   teal: '#1ABC9C',
   green: '#27AE60',
   gray: '#95A5A6',
-  lightGray: '#ECF0F1'
+  lightGray: '#ECF0F1',
+  purple: '#9B59B6'
 };
 
 // Dashboard Component (Main Screen)
-function Dashboard({ onLogout, onNavigate }) {
+function Dashboard({ onLogout, onNavigate, lang, onShowLanguageModal }) {
   const [currentTime, setCurrentTime] = useState('');
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState({
@@ -49,13 +60,13 @@ function Dashboard({ onLogout, onNavigate }) {
 
     // Get current time for greeting
     const hours = new Date().getHours();
-    if (hours < 12) setCurrentTime('Morning');
-    else if (hours < 17) setCurrentTime('Afternoon');
-    else setCurrentTime('Evening');
+    if (hours < 12) setCurrentTime(t('morning', lang));
+    else if (hours < 17) setCurrentTime(t('afternoon', lang));
+    else setCurrentTime(t('evening', lang));
 
     // Fetch teacher count
     fetchTeacherCount();
-  }, []);
+  }, [lang]);
 
   async function fetchTeacherCount() {
     try {
@@ -72,12 +83,12 @@ function Dashboard({ onLogout, onNavigate }) {
 
   const handleLogout = async () => {
     Alert.alert(
-      "Logout",
+      t('logout', lang),
       "Are you sure you want to logout?",
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t('cancel', lang), style: 'cancel' },
         { 
-          text: "Logout", 
+          text: t('logout', lang), 
           onPress: async () => {
             const { error } = await supabase.auth.signOut();
             if (!error) {
@@ -104,48 +115,45 @@ function Dashboard({ onLogout, onNavigate }) {
             </Text>
           </View>
         </View>
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Text style={styles.logoutText}>🚪</Text>
-        </TouchableOpacity>
+
+        <View style={styles.headerRight}>
+          <TouchableOpacity onPress={onShowLanguageModal} style={styles.langButton}>
+            <Text style={styles.langButtonText}>🌐 {lang.toUpperCase()}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+            <Text style={styles.logoutText}>🚪</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Greeting */}
         <View style={styles.greetingContainer}>
-          <Text style={styles.greeting}>Good {currentTime},</Text>
-          <Text style={styles.greetingName}>Principal! 👋</Text>
-          <Text style={styles.subGreeting}>Here's your school at a glance</Text>
+          <Text style={styles.greeting}>{t('greeting', lang)} {currentTime},</Text>
+          <Text style={styles.greetingName}>{t('principal_welcome', lang)}</Text>
+          <Text style={styles.subGreeting}>{t('glance', lang)}</Text>
         </View>
 
         {/* Stats Cards */}
         <View style={styles.statsRow}>
           <TouchableOpacity 
             style={[styles.statCard, styles.statCardLeft]}
-            onPress={() => Alert.alert('Coming Soon', 'Student management coming soon!')}
+            onPress={() => onNavigate('students')}
           >
             <Text style={styles.statNumber}>{stats.students}</Text>
-            <Text style={styles.statLabel}>Students</Text>
+            <Text style={styles.statLabel}>{t('students', lang)}</Text>
             <View style={styles.trendContainer}>
               <Text style={styles.trendUp}>▲</Text>
               <Text style={styles.trendText}>12%</Text>
             </View>
           </TouchableOpacity>
 
-<TouchableOpacity 
-  style={[styles.actionCard, { backgroundColor: colors.orange }]}
-  onPress={() => onNavigate('classTeacher')}
->
-  <Text style={styles.actionEmoji}>🍎</Text>
-  <Text style={styles.actionText}>Class Teachers</Text>
-  <Text style={styles.actionSubtext}>Assign class teachers</Text>
-</TouchableOpacity>
-
           <TouchableOpacity 
             style={[styles.statCard, styles.statCardRight]}
             onPress={() => onNavigate('teachers')}
           >
             <Text style={styles.statNumber}>{stats.teachers}</Text>
-            <Text style={styles.statLabel}>Teachers</Text>
+            <Text style={styles.statLabel}>{t('teachers', lang)}</Text>
             <View style={styles.trendContainer}>
               <Text style={styles.trendUp}>▲</Text>
               <Text style={styles.trendText}>5%</Text>
@@ -156,10 +164,10 @@ function Dashboard({ onLogout, onNavigate }) {
         <View style={styles.statsRow}>
           <TouchableOpacity 
             style={[styles.statCard, styles.statCardLeft]}
-            onPress={() => Alert.alert('Coming Soon', 'Attendance tracking coming soon!')}
+            onPress={() => onNavigate('attendanceStaff')}
           >
             <Text style={styles.statNumber}>{stats.attendance}%</Text>
-            <Text style={styles.statLabel}>Attendance</Text>
+            <Text style={styles.statLabel}>{t('attendance', lang)}</Text>
             <View style={styles.trendContainer}>
               <Text style={styles.trendDown}>▼</Text>
               <Text style={styles.trendText}>2%</Text>
@@ -168,19 +176,20 @@ function Dashboard({ onLogout, onNavigate }) {
 
           <TouchableOpacity 
             style={[styles.statCard, styles.statCardRight]}
-            onPress={() => Alert.alert('Coming Soon', 'Document requests coming soon!')}
+            onPress={() => onNavigate('documents')}
           >
             <Text style={styles.statNumber}>{stats.requests}</Text>
-            <Text style={styles.statLabel}>Requests</Text>
+            <Text style={styles.statLabel}>{t('requests', lang)}</Text>
             <View style={styles.badgeContainer}>
-              <Text style={styles.badgeText}>{stats.requests} Urgent</Text>
+              <Text style={styles.badgeText}>{stats.requests} {t('urgent', lang)}</Text>
             </View>
           </TouchableOpacity>
         </View>
 
-        {/* Quick Actions */}
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        {/* Quick Actions Grid */}
+        <Text style={styles.sectionTitle}>{t('quick_actions', lang)}</Text>
         <View style={styles.actionsGrid}>
+          {/* Teachers */}
           <TouchableOpacity 
             style={styles.actionItem}
             onPress={() => onNavigate('teachers')}
@@ -188,69 +197,145 @@ function Dashboard({ onLogout, onNavigate }) {
             <View style={[styles.actionIcon, { backgroundColor: colors.teal }]}>
               <Text style={styles.actionIconText}>👥</Text>
             </View>
-            <Text style={styles.actionLabel}>Teachers</Text>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('teachers', lang)}</Text>
           </TouchableOpacity>
 
-         <TouchableOpacity 
-  style={styles.actionItem}
-  onPress={() => onNavigate('students')}
->
-  <View style={[styles.actionIcon, { backgroundColor: colors.orange }]}>
-    <Text style={styles.actionIconText}>📚</Text>
-  </View>
-  <Text style={styles.actionLabel}>Students</Text>
-</TouchableOpacity>
-
-	  <TouchableOpacity 
-  	    style={[styles.actionCard, { backgroundColor: colors.purple }]}
-	    onPress={() => onNavigate('import')}
-	  >
-	    <Text style={styles.actionEmoji}>📂</Text>
-  	    <Text style={styles.actionText}>Import SARAL</Text>
-	    <Text style={styles.actionSubtext}>Upload CSV</Text>
-	  </TouchableOpacity>
-
-<TouchableOpacity 
-  style={[styles.actionCard, { backgroundColor: colors.purple }]}
-  onPress={() => onNavigate('timetable')}
->
-  <Text style={styles.actionEmoji}>📅</Text>
-  <Text style={styles.actionText}>Timetable</Text>
-  <Text style={styles.actionSubtext}>View class schedule</Text>
-</TouchableOpacity>
-
+          {/* Students */}
           <TouchableOpacity 
             style={styles.actionItem}
-            onPress={() => Alert.alert('Coming Soon', 'Attendance coming soon!')}
+            onPress={() => onNavigate('students')}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: colors.orange }]}>
+              <Text style={styles.actionIconText}>📚</Text>
+            </View>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('students', lang)}</Text>
+          </TouchableOpacity>
+
+          {/* Manage Staff (New) */}
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => onNavigate('staff')}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: colors.orange }]}>
+              <Text style={styles.actionIconText}>👷</Text>
+            </View>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('staff', lang)}</Text>
+          </TouchableOpacity>
+
+          {/* Class Teachers */}
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => onNavigate('classTeacher')}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: colors.orange }]}>
+              <Text style={styles.actionIconText}>🍎</Text>
+            </View>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('class_teachers', lang)}</Text>
+          </TouchableOpacity>
+
+          {/* Attendance */}
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => onNavigate('attendanceStaff')}
           >
             <View style={[styles.actionIcon, { backgroundColor: colors.green }]}>
               <Text style={styles.actionIconText}>✅</Text>
             </View>
-            <Text style={styles.actionLabel}>Attendance</Text>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('attendance', lang)}</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-  style={[styles.actionCard, { backgroundColor: colors.purple }]}
-  onPress={() => onNavigate('importTeachers')}
->
-  <Text style={styles.actionEmoji}>📂</Text>
-  <Text style={styles.actionText}>Import Teachers</Text>
-  <Text style={styles.actionSubtext}>Upload CSV files</Text>
-</TouchableOpacity>
 
+          {/* Salary */}
           <TouchableOpacity 
             style={styles.actionItem}
-            onPress={() => Alert.alert('Coming Soon', 'Salary calculator coming soon!')}
+            onPress={() => onNavigate('salary')}
           >
             <View style={[styles.actionIcon, { backgroundColor: colors.teal }]}>
               <Text style={styles.actionIconText}>💰</Text>
             </View>
-            <Text style={styles.actionLabel}>Salary</Text>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('salary', lang)}</Text>
+          </TouchableOpacity>
+
+          {/* Subjects */}
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => onNavigate('subjects')}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: colors.teal }]}>
+              <Text style={styles.actionIconText}>📖</Text>
+            </View>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('subjects', lang)}</Text>
+          </TouchableOpacity>
+
+          {/* Timetable */}
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => onNavigate('timetable')}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: colors.orange }]}>
+              <Text style={styles.actionIconText}>📅</Text>
+            </View>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('timetable', lang)}</Text>
+          </TouchableOpacity>
+
+          {/* SARAL */}
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => onNavigate('saral')}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: colors.purple }]}>
+              <Text style={styles.actionIconText}>📂</Text>
+            </View>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('saral_portal', lang)}</Text>
+          </TouchableOpacity>
+
+          {/* Import */}
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => onNavigate('importTeachers')}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: colors.purple }]}>
+              <Text style={styles.actionIconText}>📥</Text>
+            </View>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('import_teachers', lang)}</Text>
+          </TouchableOpacity>
+
+          {/* Mid-Day Meal */}
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => onNavigate('mealsManagement')}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: colors.orange }]}>
+              <Text style={styles.actionIconText}>🍱</Text>
+            </View>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('midday_meal', lang)}</Text>
+          </TouchableOpacity>
+
+          {/* Teacher Chat */}
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => onNavigate('teacherChat')}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: colors.purple }]}>
+              <Text style={styles.actionIconText}>💬</Text>
+            </View>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('teacher_chat', lang)}</Text>
+          </TouchableOpacity>
+
+          {/* Leave Requests */}
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => onNavigate('leaveApprovals')}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: colors.green }]}>
+              <Text style={styles.actionIconText}>📝</Text>
+            </View>
+            <Text style={styles.actionLabel} numberOfLines={1}>{t('leave_requests', lang)}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Recent Activities */}
         <View style={styles.activitiesCard}>
-          <Text style={styles.activitiesTitle}>Recent Activities</Text>
+          <Text style={styles.activitiesTitle}>{t('recent_activities', lang)}</Text>
           
           <View style={styles.activityItem}>
             <View style={[styles.activityDot, { backgroundColor: colors.green }]}>
@@ -287,26 +372,26 @@ function Dashboard({ onLogout, onNavigate }) {
         <View style={styles.bottomNav}>
           <TouchableOpacity style={styles.navItem}>
             <Text style={styles.navIcon}>🏠</Text>
-            <Text style={[styles.navText, styles.navTextActive]}>Home</Text>
+            <Text style={[styles.navText, styles.navTextActive]}>{t('home', lang)}</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.navItem}
             onPress={() => onNavigate('teachers')}
           >
             <Text style={styles.navIcon}>👥</Text>
-            <Text style={styles.navText}>Teachers</Text>
+            <Text style={styles.navText}>{t('teachers', lang)}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navItem}>
             <Text style={styles.navIcon}>📚</Text>
-            <Text style={styles.navText}>Classes</Text>
+            <Text style={styles.navText}>{t('students', lang)}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
+          <TouchableOpacity style={styles.navItem} onPress={() => onNavigate('salary')}>
             <Text style={styles.navIcon}>💰</Text>
-            <Text style={styles.navText}>Fees</Text>
+            <Text style={styles.navText}>{t('salary', lang)}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
+          <TouchableOpacity style={styles.navItem} onPress={onShowLanguageModal}>
             <Text style={styles.navIcon}>⚙️</Text>
-            <Text style={styles.navText}>Settings</Text>
+            <Text style={styles.navText}>{t('settings', lang)}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -318,6 +403,8 @@ function Dashboard({ onLogout, onNavigate }) {
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentScreen, setCurrentScreen] = useState('dashboard');
+  const [lang, setLang] = useState('en');
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -330,6 +417,11 @@ export default function App() {
       setIsAuthenticated(!!session);
     });
 
+    // Load persisted language
+    AsyncStorage.getItem('app_lang').then((val) => {
+      if (val) setLang(val);
+    });
+
     return () => subscription.unsubscribe();
   }, []);
 
@@ -337,28 +429,99 @@ export default function App() {
     setCurrentScreen(screen);
   };
 
+  const changeLanguage = async (newLang) => {
+    setLang(newLang);
+    await AsyncStorage.setItem('app_lang', newLang);
+    setShowLanguageModal(false);
+  };
+
+  const renderLanguageModal = () => (
+    <Modal visible={showLanguageModal} transparent animationType="fade">
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Select Language / भाषा निवडा / भाषा चुनें</Text>
+          
+          <TouchableOpacity 
+            onPress={() => changeLanguage('en')} 
+            style={[styles.langOption, lang === 'en' && styles.langOptionSelected]}
+          >
+            <Text style={styles.langOptionText}>🇬🇧 English</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            onPress={() => changeLanguage('hi')} 
+            style={[styles.langOption, lang === 'hi' && styles.langOptionSelected]}
+          >
+            <Text style={styles.langOptionText}>🇮🇳 हिंदी (Hindi)</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            onPress={() => changeLanguage('mr')} 
+            style={[styles.langOption, lang === 'mr' && styles.langOptionSelected]}
+          >
+            <Text style={styles.langOptionText}>🇮🇳 मराठी (Marathi)</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            onPress={() => setShowLanguageModal(false)} 
+            style={styles.modalCancelButton}
+          >
+            <Text style={styles.modalCancelButtonText}>Close / बंद करा / बंद करें</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+
   if (!isAuthenticated) {
     return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
   }
 
-  // Show different screens based on navigation
-  switch(currentScreen) {
-    case 'importTeachers':
-  return <ImportTeachersScreen onBack={() => setCurrentScreen('dashboard')} />;
-case 'classTeacher':
-  return <ClassTeacherScreen onBack={() => setCurrentScreen('dashboard')} />;
-case 'timetable':
-  return <TimetableScreen onBack={() => setCurrentScreen('dashboard')} />;
-case 'students':
-  return <StudentScreen onBack={() => setCurrentScreen('dashboard')} />;    
-case 'teachers':
-      return <TeacherScreen onBack={() => setCurrentScreen('dashboard')} />;
-    default:
-      return <Dashboard 
-        onLogout={() => setIsAuthenticated(false)} 
-        onNavigate={setCurrentScreen}
-      />;
-  }
+  return (
+    <View style={{ flex: 1 }}>
+      {renderLanguageModal()}
+      {(() => {
+        // Show different screens based on navigation
+        switch(currentScreen) {
+          case 'importTeachers':
+            return <ImportTeachersScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'classTeacher':
+            return <ClassTeacherScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'timetable':
+            return <TimetableScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'students':
+            return <StudentScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;    
+          case 'teachers':
+            return <TeacherScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'attendanceStaff':
+            return <AttendanceStaffScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'salary':
+            return <SalaryCalculatorScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'documents':
+            return <DocumentsScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'saral':
+            return <SaralScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'subjects':
+            return <SubjectsScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'staff':
+            return <StaffScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'mealsManagement':
+            return <MealManagementScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'teacherChat':
+            return <TeacherChatScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          case 'leaveApprovals':
+            return <LeaveApprovalsScreen lang={lang} onBack={() => setCurrentScreen('dashboard')} />;
+          default:
+            return <Dashboard 
+              lang={lang}
+              onShowLanguageModal={() => setShowLanguageModal(true)}
+              onLogout={() => setIsAuthenticated(false)} 
+              onNavigate={setCurrentScreen}
+            />;
+        }
+      })()}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -381,6 +544,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   schoolEmoji: {
     fontSize: 30,
     marginRight: 10,
@@ -393,6 +560,18 @@ const styles = StyleSheet.create({
   principalName: {
     fontSize: 12,
     color: colors.gray,
+  },
+  langButton: {
+    marginRight: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 15,
+    backgroundColor: colors.lightGray,
+  },
+  langButtonText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: colors.text,
   },
   logoutButton: {
     width: 40,
@@ -517,8 +696,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   actionLabel: {
-    fontSize: 12,
+    fontSize: 11,
     color: colors.text,
+    textAlign: 'center',
+    paddingHorizontal: 2
   },
   activitiesCard: {
     backgroundColor: colors.white,
@@ -590,4 +771,54 @@ const styles = StyleSheet.create({
     color: colors.orange,
     fontWeight: 'bold',
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: colors.white,
+    borderRadius: 15,
+    padding: 20,
+    width: '85%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.text,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  langOption: {
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.lightGray,
+    alignItems: 'center',
+  },
+  langOptionSelected: {
+    backgroundColor: colors.lightGray,
+    borderRadius: 8,
+  },
+  langOptionText: {
+    fontSize: 16,
+    color: colors.text,
+    fontWeight: '500',
+  },
+  modalCancelButton: {
+    marginTop: 20,
+    paddingVertical: 12,
+    backgroundColor: colors.gray,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  modalCancelButtonText: {
+    color: colors.white,
+    fontWeight: 'bold',
+  }
 });

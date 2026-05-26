@@ -7,19 +7,21 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  FlatList,
   Modal,
-  SafeAreaView
+  SafeAreaView,
+  ActivityIndicator
 } from 'react-native';
 import { supabase } from '../services/supabase';
 import colors from '../components/colors';
+import { t } from '../services/i18n';
 
-export default function AddStudentScreen({ onBack }) {
+export default function AddStudentScreen({ onBack, lang }) {
   const [students, setStudents] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Form fields
   const [firstName, setFirstName] = useState('');
@@ -39,6 +41,7 @@ export default function AddStudentScreen({ onBack }) {
   }, []);
 
   async function fetchStudents() {
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from('students')
@@ -49,6 +52,8 @@ export default function AddStudentScreen({ onBack }) {
       setStudents(data || []);
     } catch (error) {
       console.log('Error fetching students:', error.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -56,17 +61,17 @@ export default function AddStudentScreen({ onBack }) {
   const openEditForm = (student) => {
     setEditingStudent(student);
     setIsEditing(true);
-    setFirstName(student.first_name);
-    setLastName(student.last_name);
-    setRollNumber(student.roll_number);
-    setClass_(student.class);
-    setParentName(student.parent_name);
-    setParentPhone(student.parent_phone);
-    // Extract numeric part from unique_id (remove "ID:")
+    setFirstName(student.first_name || '');
+    setLastName(student.last_name || '');
+    setRollNumber(student.roll_number || '');
+    setClass_(student.class || '10A');
+    setParentName(student.parent_name || '');
+    setParentPhone(student.parent_phone || '');
     const udise = student.unique_id ? student.unique_id.replace('ID:', '') : '';
     setUdiseNumber(udise);
-    // Set the class picker values based on class (e.g., "10A" -> standard "10th", division "A")
-    const match = student.class.match(/(\d+)([A-Z])/);
+    
+    // Set standard and division from class
+    const match = (student.class || '10A').match(/(\d+)([A-Z])/);
     if (match) {
       const stdNum = match[1];
       setStandard(`${stdNum}th`);
@@ -75,7 +80,6 @@ export default function AddStudentScreen({ onBack }) {
     setShowForm(true);
   };
 
-  // Clear form after saving or cancel
   const clearForm = () => {
     setFirstName('');
     setLastName('');
@@ -88,10 +92,9 @@ export default function AddStudentScreen({ onBack }) {
     setIsEditing(false);
   };
 
-  // Save student (insert or update)
   async function saveStudent() {
     if (!firstName || !lastName || !rollNumber || !class_ || !parentName || !parentPhone || !udiseNumber) {
-      Alert.alert('Error', 'Please fill in all fields, including UDISE Number');
+      Alert.alert(t('error', lang), 'Please fill in all fields, including UDISE Number');
       return;
     }
 
@@ -104,28 +107,28 @@ export default function AddStudentScreen({ onBack }) {
         const { error } = await supabase
           .from('students')
           .update({
-            first_name: firstName,
-            last_name: lastName,
-            roll_number: rollNumber,
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
+            roll_number: rollNumber.trim(),
             class: class_,
-            parent_name: parentName,
-            parent_phone: parentPhone,
+            parent_name: parentName.trim(),
+            parent_phone: parentPhone.trim(),
             unique_id: fullUdiseId,
           })
           .eq('id', editingStudent.id);
 
         if (error) throw error;
-        Alert.alert('Success', 'Student updated successfully!');
+        Alert.alert(t('success', lang), 'Student updated successfully!');
       } else {
         // INSERT new student – check duplicate roll number in same class
         const { data: existing } = await supabase
           .from('students')
           .select('id')
           .eq('class', class_)
-          .eq('roll_number', rollNumber);
+          .eq('roll_number', rollNumber.trim());
 
         if (existing && existing.length > 0) {
-          Alert.alert('Error', 'Roll number already exists in this class!');
+          Alert.alert(t('error', lang), 'Roll number already exists in this class!');
           setLoading(false);
           return;
         }
@@ -137,7 +140,7 @@ export default function AddStudentScreen({ onBack }) {
           .eq('unique_id', fullUdiseId);
 
         if (existingUdise && existingUdise.length > 0) {
-          Alert.alert('Error', 'This UDISE Number is already registered');
+          Alert.alert(t('error', lang), 'This UDISE Number is already registered');
           setLoading(false);
           return;
         }
@@ -145,39 +148,144 @@ export default function AddStudentScreen({ onBack }) {
         const { error } = await supabase
           .from('students')
           .insert([{
-            first_name: firstName,
-            last_name: lastName,
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
             unique_id: fullUdiseId,
-            roll_number: rollNumber,
+            roll_number: rollNumber.trim(),
             class: class_,
-            parent_name: parentName,
-            parent_phone: parentPhone,
+            parent_name: parentName.trim(),
+            parent_phone: parentPhone.trim(),
             created_at: new Date()
           }]);
 
         if (error) throw error;
-        Alert.alert('Success', 'Student added successfully!');
+        Alert.alert(t('success', lang), 'Student added successfully!');
       }
 
-      // Close form and refresh list
       setShowForm(false);
       clearForm();
       fetchStudents();
     } catch (error) {
-      Alert.alert('Error', error.message);
+      Alert.alert(t('error', lang), error.message);
     } finally {
       setLoading(false);
     }
   }
 
+  const renderForm = () => (
+    <View style={styles.formCard}>
+      <Text style={styles.formTitle}>
+        {isEditing ? t('edit_student', lang) : t('add_new_student', lang)}
+      </Text>
+      
+      <View style={styles.row}>
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>{t('first_name', lang)}</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="e.g., John"
+            value={firstName}
+            onChangeText={setFirstName}
+            placeholderTextColor={colors.gray}
+          />
+        </View>
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>{t('last_name', lang)}</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="e.g., Doe"
+            value={lastName}
+            onChangeText={setLastName}
+            placeholderTextColor={colors.gray}
+          />
+        </View>
+      </View>
+
+      <View style={styles.row}>
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>{t('roll_number', lang)}</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="e.g., 15"
+            value={rollNumber}
+            onChangeText={setRollNumber}
+            keyboardType="numeric"
+            placeholderTextColor={colors.gray}
+          />
+        </View>
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>{t('class', lang)}</Text>
+          <TouchableOpacity 
+            style={styles.classPickerButton}
+            onPress={() => setShowClassPicker(true)}
+          >
+            <Text style={styles.classPickerText}>{class_}</Text>
+            <Text style={styles.dropdownIcon}>▼</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <Text style={styles.label}>{t('parent_name', lang)}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g., Mr. John Doe Sr."
+        value={parentName}
+        onChangeText={setParentName}
+        placeholderTextColor={colors.gray}
+      />
+
+      <Text style={styles.label}>{t('parent_phone', lang)}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g., 9876543210"
+        value={parentPhone}
+        onChangeText={setParentPhone}
+        keyboardType="phone-pad"
+        maxLength={10}
+        placeholderTextColor={colors.gray}
+      />
+
+      <Text style={styles.label}>{t('udise_number', lang)}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g., 2024271909001120002"
+        value={udiseNumber}
+        onChangeText={setUdiseNumber}
+        keyboardType="numeric"
+        maxLength={19}
+        placeholderTextColor={colors.gray}
+      />
+
+      <TouchableOpacity
+        style={[styles.saveButton, { backgroundColor: colors.orange }]}
+        onPress={saveStudent}
+        disabled={loading}
+      >
+        <Text style={styles.saveButtonText}>
+          {loading ? t('loading', lang) : (isEditing ? t('save_changes', lang) : t('save', lang))}
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.cancelButton, { marginTop: 10 }]}
+        onPress={() => {
+          setShowForm(false);
+          clearForm();
+        }}
+      >
+        <Text style={styles.cancelButtonText}>{t('cancel', lang)}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backButton}>
           <Text style={styles.backText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Manage Students</Text>
+        <Text style={styles.headerTitle}>{t('manage_students', lang)}</Text>
         <TouchableOpacity 
           onPress={() => {
             clearForm();
@@ -190,113 +298,8 @@ export default function AddStudentScreen({ onBack }) {
       </View>
 
       <ScrollView>
-        {/* Add/Edit Student Form */}
-        {showForm && (
-          <View style={styles.formCard}>
-            <Text style={styles.formTitle}>
-              {isEditing ? 'Edit Student' : 'Add New Student'}
-            </Text>
-            
-            <View style={styles.row}>
-              <View style={styles.halfWidth}>
-                <Text style={styles.label}>First Name *</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="e.g., John"
-                  value={firstName}
-                  onChangeText={setFirstName}
-                  placeholderTextColor={colors.gray}
-                />
-              </View>
-              <View style={styles.halfWidth}>
-                <Text style={styles.label}>Last Name *</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="e.g., Doe"
-                  value={lastName}
-                  onChangeText={setLastName}
-                  placeholderTextColor={colors.gray}
-                />
-              </View>
-            </View>
-
-            <View style={styles.row}>
-              <View style={styles.halfWidth}>
-                <Text style={styles.label}>Roll Number *</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="e.g., 15"
-                  value={rollNumber}
-                  onChangeText={setRollNumber}
-                  keyboardType="numeric"
-                  placeholderTextColor={colors.gray}
-                />
-              </View>
-              <View style={styles.halfWidth}>
-                <Text style={styles.label}>Class *</Text>
-                <TouchableOpacity 
-                  style={styles.classPickerButton}
-                  onPress={() => setShowClassPicker(true)}
-                >
-                  <Text style={styles.classPickerText}>{class_}</Text>
-                  <Text style={styles.dropdownIcon}>▼</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <Text style={styles.label}>Parent Name *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g., Mr. John Doe Sr."
-              value={parentName}
-              onChangeText={setParentName}
-              placeholderTextColor={colors.gray}
-            />
-
-            <Text style={styles.label}>Parent Phone *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g., 9876543210"
-              value={parentPhone}
-              onChangeText={setParentPhone}
-              keyboardType="phone-pad"
-              maxLength={10}
-              placeholderTextColor={colors.gray}
-            />
-
-            {/* UDISE Number Input */}
-            <Text style={styles.label}>SARAL UDISE Number *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g., 2024271909001120002"
-              value={udiseNumber}
-              onChangeText={setUdiseNumber}
-              keyboardType="numeric"
-              maxLength={19}
-              placeholderTextColor={colors.gray}
-            />
-
-            <TouchableOpacity
-              style={[styles.saveButton, { backgroundColor: colors.orange }]}
-              onPress={saveStudent}
-              disabled={loading}
-            >
-              <Text style={styles.saveButtonText}>
-                {loading ? 'Saving...' : (isEditing ? 'Update Student' : 'Add Student')}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.cancelButton, { marginTop: 10 }]}
-              onPress={() => {
-                setShowForm(false);
-                clearForm();
-              }}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        {/* Add Student Form (Only shown at the top when not editing) */}
+        {showForm && !isEditing && renderForm()}
 
         {/* Class Picker Modal */}
         <Modal visible={showClassPicker} transparent animationType="slide">
@@ -356,49 +359,91 @@ export default function AddStudentScreen({ onBack }) {
           </View>
         </Modal>
 
+        {/* Search Bar */}
+        <TextInput
+          style={styles.searchInput}
+          placeholder={t('search_placeholder', lang)}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholderTextColor={colors.gray}
+        />
+
         {/* Students List */}
-        <Text style={styles.listTitle}>Your Students ({students.length})</Text>
-        
-        {students.map((student) => (
-          <View key={student.id} style={styles.studentCard}>
-            <View style={styles.studentHeader}>
-              <View>
-                <Text style={styles.studentName}>
-                  {student.first_name} {student.last_name}
-                </Text>
-                <Text style={styles.studentClass}>Class {student.class} | Roll: {student.roll_number}</Text>
-              </View>
-              <View style={[styles.uniqueIdBadge, { backgroundColor: colors.teal }]}>
-                <Text style={styles.uniqueIdBadgeText}>
-                  ID: {student.unique_id ? student.unique_id.replace('ID:', '') : ''}
-                </Text>
-              </View>
+        {(() => {
+          const filteredStudents = students.filter(student => {
+            const fullName = `${student.first_name || ''} ${student.last_name || ''}`.toLowerCase();
+            const q = searchQuery.toLowerCase();
+            return fullName.includes(q) ||
+                   (student.class || '').toLowerCase().includes(q) ||
+                   (student.roll_number || '').toString().includes(q) ||
+                   (student.unique_id || '').toLowerCase().includes(q) ||
+                   (student.parent_phone || '').includes(q) ||
+                   (student.parent_name || '').toLowerCase().includes(q);
+          });
+          return (
+            <View style={{ paddingHorizontal: 20 }}>
+              <Text style={styles.listTitle}>
+                {searchQuery ? `${t('search_results', lang)} (${filteredStudents.length})` : `${t('your_students', lang)} (${students.length})`}
+              </Text>
+              
+              {filteredStudents.map((student) => (
+                <View key={student.id}>
+                  <View style={styles.studentCard}>
+                    <View style={styles.studentHeader}>
+                      <View>
+                        <Text style={styles.studentName}>
+                          {student.first_name} {student.last_name}
+                        </Text>
+                        <Text style={styles.studentClass}>Class {student.class} | Roll: {student.roll_number}</Text>
+                      </View>
+                      <View style={[styles.uniqueIdBadge, { backgroundColor: colors.teal }]}>
+                        <Text style={styles.uniqueIdBadgeText}>
+                          ID: {student.unique_id ? student.unique_id.replace('ID:', '') : ''}
+                        </Text>
+                      </View>
+                    </View>
+                    
+                    <View style={styles.parentInfo}>
+                      <Text style={styles.parentText}>👪 {student.parent_name}</Text>
+                      <Text style={styles.parentText}>📞 {student.parent_phone}</Text>
+                    </View>
+                    
+                    {/* Edit Button */}
+                    <TouchableOpacity
+                      style={styles.editButton}
+                      onPress={() => openEditForm(student)}
+                    >
+                      <Text style={styles.editButtonText}>✏️ {t('edit', lang)}</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Inline edit form directly below edited card */}
+                  {showForm && isEditing && editingStudent && editingStudent.id === student.id && (
+                    <View style={{ marginBottom: 15, marginTop: -8 }}>
+                      {renderForm()}
+                    </View>
+                  )}
+                </View>
+              ))}
+              
+              {filteredStudents.length === 0 && searchQuery.length > 0 && (
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyEmoji}>🔍</Text>
+                  <Text style={styles.emptyText}>No matching students found</Text>
+                </View>
+              )}
             </View>
-            
-            <View style={styles.parentInfo}>
-              <Text style={styles.parentText}>👪 {student.parent_name}</Text>
-              <Text style={styles.parentText}>📞 {student.parent_phone}</Text>
-            </View>
-            
-            {/* Edit Button */}
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={() => openEditForm(student)}
-            >
-              <Text style={styles.editButtonText}>✏️ Edit</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
+          );
+        })()}
         
-        {students.length === 0 && (
+        {students.length === 0 && !loading && (
           <View style={styles.emptyState}>
             <Text style={styles.emptyEmoji}>📚</Text>
             <Text style={styles.emptyText}>No students yet</Text>
-            <Text style={styles.emptySubText}>Tap the + button to add your first student</Text>
           </View>
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -447,7 +492,7 @@ const styles = StyleSheet.create({
   },
   formCard: {
     backgroundColor: colors.white,
-    margin: 20,
+    marginVertical: 15,
     padding: 20,
     borderRadius: 12,
     shadowColor: '#000',
@@ -455,6 +500,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
   },
   formTitle: {
     fontSize: 18,
@@ -496,7 +543,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   cancelButton: {
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
     backgroundColor: colors.lightGray,
@@ -510,13 +557,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: colors.text,
-    marginHorizontal: 20,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   studentCard: {
     backgroundColor: colors.white,
-    marginHorizontal: 20,
-    marginBottom: 12,
+    marginBottom: 15,
     padding: 15,
     borderRadius: 10,
     shadowColor: '#000',
@@ -524,6 +569,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
   },
   studentHeader: {
     flexDirection: 'row',
@@ -563,16 +610,17 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   editButton: {
-    marginTop: 10,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: colors.teal,
+    marginTop: 12,
+    backgroundColor: colors.teal + '15',
+    borderWidth: 1,
+    borderColor: colors.teal + '35',
+    paddingVertical: 8,
     borderRadius: 8,
-    alignSelf: 'flex-start',
+    alignItems: 'center',
   },
   editButtonText: {
-    color: colors.white,
-    fontSize: 12,
+    color: colors.teal,
+    fontSize: 13,
     fontWeight: 'bold',
   },
   emptyState: {
@@ -581,20 +629,13 @@ const styles = StyleSheet.create({
     paddingVertical: 50,
   },
   emptyEmoji: {
-    fontSize: 60,
+    fontSize: 50,
     marginBottom: 15,
   },
   emptyText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 5,
-  },
-  emptySubText: {
-    fontSize: 14,
     color: colors.gray,
-    textAlign: 'center',
-    paddingHorizontal: 40,
   },
   classPickerButton: {
     backgroundColor: colors.lightGray,
@@ -669,5 +710,28 @@ const styles = StyleSheet.create({
     color: colors.white,
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  searchInput: {
+    backgroundColor: colors.white,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    fontSize: 14,
+    color: colors.text,
+    marginTop: 15,
+  },
+  sectionDividerText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: colors.teal,
+    marginTop: 15,
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.lightGray,
+    paddingBottom: 5,
   },
 });

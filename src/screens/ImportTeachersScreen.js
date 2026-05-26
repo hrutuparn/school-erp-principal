@@ -96,7 +96,7 @@ export default function ImportTeachersScreen({ onBack }) {
     const missingEmails = new Set();
     for (const row of assignmentsRows) {
       let teacherEmail = row.teacher_email ? row.teacher_email.trim() : '';
-      const className = row.class ? row.class.trim() : '';
+      const className = row.class_name ? row.class_name.trim() : (row.class ? row.class.trim() : '');
       const subject = row.subject ? row.subject.trim() : '';
       if (!teacherEmail || !className || !subject) {
         failed++;

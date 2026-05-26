@@ -1,0 +1,261 @@
+--- CLOUD SUPABASE SCHEMA ANALYSIS ---
+
+Table: teacher_assignments
+  - id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - teacher_id (integer, format: bigint): Note:
+This is a Foreign Key to `teachers.id`.<fk table='teachers' column='id'/>
+  - class_name (string, format: text)
+  - subject (string, format: text)
+  - created_at (string, format: timestamp with time zone)
+
+Table: parent_students
+  - id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - parent_id (integer, format: bigint): Note:
+This is a Foreign Key to `parents.id`.<fk table='parents' column='id'/>
+  - student_id (integer, format: bigint): Note:
+This is a Foreign Key to `students.id`.<fk table='students' column='id'/>
+  - unique_id (string, format: text)
+  - nickname (string, format: text)
+  - is_active (boolean, format: boolean)
+  - created_at (string, format: timestamp with time zone)
+
+Table: parents
+  - id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - user_id (string, format: uuid)
+  - phone (string, format: text)
+  - name (string, format: text)
+  - email (string, format: text)
+  - created_at (string, format: timestamp with time zone)
+
+Table: chat_messages
+  - id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - sender_id (string, format: text)
+  - sender_type (string, format: text)
+  - receiver_id (string, format: text)
+  - message (string, format: text)
+  - command (string, format: text)
+  - is_read (boolean, format: boolean)
+  - created_at (string, format: timestamp with time zone)
+
+Table: principals
+  - principal_id (string, format: text): Note:
+This is a Primary Key.<pk/>
+  - school_id (string, format: text): Note:
+This is a Foreign Key to `schools.school_id`.<fk table='schools' column='school_id'/>
+  - full_name (string, format: text)
+  - mobile (string, format: text)
+  - email (string, format: text)
+  - date_of_birth (string, format: date)
+  - password_hash (string, format: text)
+  - profile_photo (string, format: text)
+  - created_at (string, format: timestamp with time zone)
+
+Table: teachers
+  - id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - name (string, format: text)
+  - email (string, format: text)
+  - phone (string, format: text)
+  - created_at (string, format: timestamp with time zone)
+
+Table: classes
+  - class_id (string, format: text): Note:
+This is a Primary Key.<pk/>
+  - school_id (string, format: text): Note:
+This is a Foreign Key to `schools.school_id`.<fk table='schools' column='school_id'/>
+  - standard (integer, format: integer)
+  - section (string, format: text)
+  - display_name (string, format: text)
+  - class_teacher_id (integer, format: bigint): Note:
+This is a Foreign Key to `teachers.id`.<fk table='teachers' column='id'/>
+  - academic_year (string, format: text)
+  - created_at (string, format: timestamp with time zone)
+
+Table: fees
+  - fee_id (string, format: text): Note:
+This is a Primary Key.<pk/>
+  - school_id (string, format: text): Note:
+This is a Foreign Key to `schools.school_id`.<fk table='schools' column='school_id'/>
+  - student_id (integer, format: bigint): Note:
+This is a Foreign Key to `students.id`.<fk table='students' column='id'/>
+  - parent_id (integer, format: bigint): Note:
+This is a Foreign Key to `parents.id`.<fk table='parents' column='id'/>
+  - fee_type (string, format: text)
+  - description (string, format: text)
+  - amount (number, format: numeric)
+  - due_date (string, format: date)
+  - status (string, format: text)
+  - paid_amount (number, format: numeric)
+  - paid_on (string, format: date)
+  - payment_method (string, format: text)
+  - transaction_id (string, format: text)
+  - receipt_url (string, format: text)
+  - created_at (string, format: timestamp with time zone)
+
+Table: bus_stops
+  - stop_id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - bus_id (string, format: text): Note:
+This is a Foreign Key to `buses.bus_id`.<fk table='buses' column='bus_id'/>
+  - stop_name (string, format: text)
+  - stop_order (integer, format: integer)
+  - expected_time (string, format: time without time zone)
+  - latitude (number, format: numeric)
+  - longitude (number, format: numeric)
+  - created_at (string, format: timestamp with time zone)
+
+Table: document_requests
+  - request_id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - school_id (string, format: text): Note:
+This is a Foreign Key to `schools.school_id`.<fk table='schools' column='school_id'/>
+  - student_id (integer, format: bigint): Note:
+This is a Foreign Key to `students.id`.<fk table='students' column='id'/>
+  - parent_id (integer, format: bigint): Note:
+This is a Foreign Key to `parents.id`.<fk table='parents' column='id'/>
+  - type (string, format: text)
+  - note (string, format: text)
+  - status (string, format: text)
+  - requested_on (string, format: timestamp with time zone)
+  - resolved_on (string, format: timestamp with time zone)
+
+Table: midday_meal
+  - meal_id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - school_id (string, format: text): Note:
+This is a Foreign Key to `schools.school_id`.<fk table='schools' column='school_id'/>
+  - date (string, format: date)
+  - menu_items (string, format: text)
+  - allergens (string, format: text)
+  - created_at (string, format: timestamp with time zone)
+
+Table: staging_saral
+  - s_no (integer, format: integer)
+  - gr_set (string, format: text)
+  - gr_number (string, format: text)
+  - standard (integer, format: integer)
+  - division (string, format: text)
+  - saral_student_id (string, format: text)
+  - student_name_full (string, format: text)
+  - mother_name (string, format: text)
+  - rte_eligible (string, format: text)
+  - birth_date (string, format: text)
+  - gender (string, format: text)
+  - religion (string, format: text)
+  - caste (string, format: text)
+
+Table: staff
+  - staff_id (string, format: text): Note:
+This is a Primary Key.<pk/>
+  - school_id (string, format: text): Note:
+This is a Foreign Key to `schools.school_id`.<fk table='schools' column='school_id'/>
+  - full_name (string, format: text)
+  - mobile (string, format: text)
+  - role (string, format: text)
+  - date_of_birth (string, format: date)
+  - joining_date (string, format: date)
+  - base_salary (number, format: numeric)
+  - bank_account (string, format: text)
+  - is_active (boolean, format: boolean)
+  - created_at (string, format: timestamp with time zone)
+
+Table: class_teachers
+  - id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - class_name (string, format: text)
+  - teacher_id (integer, format: bigint): Note:
+This is a Foreign Key to `teachers.id`.<fk table='teachers' column='id'/>
+  - created_at (string, format: timestamp with time zone)
+
+Table: students
+  - id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - gr_set (string, format: text)
+  - gr_number (string, format: text)
+  - division (string, format: text)
+  - student_name_full (string, format: text)
+  - mother_name (string, format: text)
+  - rte_eligible (boolean, format: boolean)
+  - birth_date (string, format: text)
+  - gender (string, format: text)
+  - religion (string, format: text)
+  - caste (string, format: text)
+  - inserted_date (string, format: date)
+  - first_name (string, format: text)
+  - last_name (string, format: text)
+  - unique_id (string, format: text)
+  - roll_number (string, format: text)
+  - class (string, format: text)
+  - parent_name (string, format: text)
+  - parent_phone (string, format: text)
+  - created_at (string, format: timestamp with time zone)
+  - teacher_id (string, format: text)
+  - standard (integer, format: integer)
+
+Table: timetable
+  - id (integer, format: bigint): Note:
+This is a Primary Key.<pk/>
+  - class_id (string, format: text): Note:
+This is a Foreign Key to `classes.class_id`.<fk table='classes' column='class_id'/>
+  - day (string, format: text)
+  - period_number (integer, format: integer)
+  - subject (string, format: text)
+  - teacher_id (integer, format: bigint): Note:
+This is a Foreign Key to `teachers.id`.<fk table='teachers' column='id'/>
+  - start_time (string, format: time without time zone)
+  - end_time (string, format: time without time zone)
+  - academic_year (string, format: text)
+  - created_at (string, format: timestamp with time zone)
+
+Table: buses
+  - bus_id (string, format: text): Note:
+This is a Primary Key.<pk/>
+  - school_id (string, format: text): Note:
+This is a Foreign Key to `schools.school_id`.<fk table='schools' column='school_id'/>
+  - bus_number (string, format: text)
+  - driver_id (string, format: text): Note:
+This is a Foreign Key to `staff.staff_id`.<fk table='staff' column='staff_id'/>
+  - capacity (integer, format: integer)
+  - route_name (string, format: text)
+  - current_lat (number, format: numeric)
+  - current_lng (number, format: numeric)
+  - last_updated (string, format: timestamp with time zone)
+  - created_at (string, format: timestamp with time zone)
+
+Table: events
+  - event_id (string, format: text): Note:
+This is a Primary Key.<pk/>
+  - school_id (string, format: text): Note:
+This is a Foreign Key to `schools.school_id`.<fk table='schools' column='school_id'/>
+  - title (string, format: text)
+  - type (string, format: text)
+  - date (string, format: date)
+  - start_time (string, format: time without time zone)
+  - end_time (string, format: time without time zone)
+  - description (string, format: text)
+  - applicable_to (string, format: text)
+  - is_holiday (boolean, format: boolean)
+  - created_at (string, format: timestamp with time zone)
+
+Table: schools
+  - school_id (string, format: text): Note:
+This is a Primary Key.<pk/>
+  - name (string, format: text)
+  - udise_number (string, format: text)
+  - address (string, format: text)
+  - city (string, format: text)
+  - state (string, format: text)
+  - board (string, format: text)
+  - medium (string, format: text)
+  - phone (string, format: text)
+  - email (string, format: text)
+  - logo_url (string, format: text)
+  - bus_facility (boolean, format: boolean)
+  - midday_meal (boolean, format: boolean)
+  - plan (string, format: text)
+  - created_at (string, format: timestamp with time zone)
+
